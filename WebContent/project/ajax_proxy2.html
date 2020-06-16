@@ -1,0 +1,46 @@
+<!-- ajax_proxy.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax Get</title>
+    <script type="text/javascript" src="../Js/jquery-3.5.1.js"></script>
+    <script>
+        
+
+        $(function(){
+            $('#btn').click(function(){
+            	url : 'proxy.jsp?url=http://openapi.seoul.go.kr:8088/7a69797a5163686c39384158425559/xml/vtrHospitalInfo/1/1000/',
+            	var queryParams = '?' + encodeURIComponent('ServiceKey') + '='+'SoefkOAVB5S16TLHVgxLyPG41TiGVe%2BP0pCsH9vQ4UXBhrE64pxN0F9qUZPHUm23NT98%2Fi5IXm6hqntWVCCrqw%3D%3D'
+            	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1'); /**/
+            	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); /**/
+            	queryParams += '&' + encodeURIComponent('returnType') + '=' + encodeURIComponent('json'); /**/
+            	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('10~100'); /**/
+            	queryParams += '&' + encodeURIComponent('orgCoName') + '=' + encodeURIComponent('한국'); /**/  
+            	console.log('proxy.jsp?url='+url+queryParams);
+            	//var address = encodeURIComponent('http://api.data.go.kr/openapi/tn_pubr_public_female_safety_prtchouse_api');
+                        
+                $.ajax({
+                    url : 'proxy.jsp?url='+url+queryParams,
+                    type :'GET',
+                    dataType : 'xml',
+                    error : function(){
+                        alert('error');
+                    },
+                    success : function(obj){
+                    	console.log(obj);
+                        $("#sel").append(JSON.stringify(obj));
+                    }
+                });
+
+            });
+        });
+        </script>
+        </head>
+        <body>
+        <button id="btn">aa</button>
+        <div id="sel"></div>
+        </body>
+        </html>
