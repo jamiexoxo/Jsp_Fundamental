@@ -1,48 +1,75 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ajax Get</title>
-<script type="text/javascript" src="../Js/jquery-3.5.1.js"></script>
-<script>
- //버튼을 누르면 데이터를 가져올 수 있는 작성문
+	<meta charset="utf-8">
+    <title></title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+	<!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/js/jquery-3.5.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="../Js/jquery-3.5.1.js"></script>
+    <script type="text/javascript"></script>
 
-        $(function(){
-  $('#btn').click(function(){
- $.ajax({
- url : 'proxy.jsp?url=http://openapi.seoul.go.kr:8088/666f736741736f6e37306e726a4949/xml/vtrHospitalInfo/1/1000/',
- type : 'GET',
- dataType : 'xml',
-  error : function(){
-alert('error');
-  },
- success : function(xml){
-   console.log(xml);
-  $(xml).find("row").each(function(){
-   let NM = $(this).find("NM").text();
-   let ADDR = $(this).find("ADDR").text();
-   let STATE = $(this).find("STATE").text();
-   let XCODE = $(this).find("XCODE").text();
-   let YCODE = $(this).find("YCODE").text();
-   var info = NM+","+ADDR+","+STATE+","+XCODE+","+YCODE+"<br/>";
-   $('#sel').append(info);
- 
-	});
- }
-});
-
-});
-});
-
-    </script>
 </head>
 <body>
-<button id="btn">가져오기</button>
-<div id="sel">
-		</select>
+  <script>
+     //버튼을 누르면 데이터 가져올수 있는 작성문
+     //자바스크립트에서 jquery문법 사용하기 
+     //자바스크립트에서 $('#searchbox').val();는 jquery문법
+     $(function(){
+    	 $('#search').click(function(){
+    		  //input 입력값 변수에 넣기
+    		  var searching = $('#searchbox').val();
+    		  
+    	       
+    	 
+    		 
+    		 
+    		 
+    		 
+    	 });
+       });
+  
+  
+  
+  </script>
+
+          
+   
+
+ <div class="container">
+		<div class="row" style="margin-top:20px">
+			<div class="col-sm-12">
+				<h5 class="card-title">동물병원</h5>
+				 <div class="form-row d-flex align-items-center">
+		              <div class="form-group col-md-10">
+		                 <input type="text" id="searchbox" name="searchbox" class="form-control" placeholder="예)양천구"  />
+		                 </div>
+		              <div class="form-group col-md-2">
+		                <button id="search"    class="btn btn-info btn-lg btn-block" ><i class="fa fa-search" aria-hidden="true"></i>  검색</button>
+		              </div>
+	              </div>
+			</div>
+		</div>
+					<p>검색 예) 서울특별시 양천구 or 양천구 </p>
+		<div class="row" style="margin-top:20px">
+			<div class="col-sm-12">
+		    
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12" id="content2">
+			
+			</div>
+		</div>
+	</div>
+
+    
 </body>
 
+    
 </html>
-
-           
+   
