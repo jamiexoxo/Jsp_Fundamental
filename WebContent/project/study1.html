@@ -1,0 +1,22 @@
+ <html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> /* 구글 CDN 이용*/ </script> 
+	
+	<script> 
+		$(function(){
+		//alert() /* jquery 연동되는지 확인 */
+			$('p').click(function(){ /* 클릭하면 사라지게함 */
+				$(this).hide() /* 자기 자신을 클릭할 때 사라짐 */
+				/*(this).hide(1000) 바로 안없어지고 1초 지난 뒤에 없어짐 */
+			})
+		})
+	</script>
+</head>
+<body>
+	<p>If you click on me, I will disappear.</p>
+	<p>Click me away!</p>
+	<p>Click me too!</p>
+</body>
+</html>	

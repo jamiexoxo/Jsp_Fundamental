@@ -7,6 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
 import kr.or.kpc.dto.NoticeDto;
 import kr.or.kpc.util.ConnLocator;
 
@@ -274,6 +277,139 @@ public class NoticeDao {
 		
 	}
 		
-	}
 	
+	
+public int getMaxNum() {
+	int max = 0;
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+
+	try {
+		con = ConnLocator.getConnect();
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT IFNULL(MAX(N_NUM)+1,1) FROM notice");
+		
+		
+
+		pstmt = con.prepareStatement(sql.toString());
+
+		int index = 0;
+		
+		rs = pstmt.executeQuery();
+		if(rs.next()) {
+			index = 0;
+			max = rs.getInt(++index);
+			
+		}
+		
+		
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} finally {
+		try {
+			if (rs != null)
+				rs.close();
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+	return max;
+	
+}
+public ArrayList<NoticeDto> selectJson(int start, int len){
+	  
+	/*jasonobject에 value만들어서 add,add,add,add S
+	 * {  
+	 *     "items" : [  //items안에 select 칼럼명이 insert됨. 
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     {"n_num":1 , "n_writer", "작성자1","n_title":"제목1","regdate":"2020"},
+	 *     
+	 *     ]
+	 *    
+	 * 
+	 * }
+	 *xml형식 만들기 - tag기반 , json - javascript java object 형식으로 표현 
+	 *<items>
+	 *<item>
+	 *<num>
+	 *<wirter>
+	 *         </writer>
+	 *<title></title>
+	 *</num>
+	 *</item> 
+	 *</items> 
+	 *
+	 * 
+	 * 
+	 */
+	 
+	 
+	JSONObject obj = new JSONObject();
+	JSONArray array = new JSONArray(); //안에 내용이 array형식으로 num1 etc
+	Connection con = null;
+	PreparedStatement pstmt = null;
+	ResultSet rs = null;
+	try {
+		con = ConnLocator.getConnect();
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT n_num, n_writer, n_title, n_content,  ");
+		sql.append("DATE_FORMAT(n_regdate,'%Y.%m.%d %h:%i') ");
+		sql.append("FROM notice ");
+		sql.append("ORDER BY n_num DESC ");
+		sql.append("LIMIT ? , ? ");
+		pstmt = con.prepareStatement(sql.toString());
+
+		int index = 0;
+		pstmt.setInt(++index, start);
+		pstmt.setInt(++index, len);
+ 
+		JSONObject obj1 = null;
+		rs = pstmt.executeQuery();
+		while (rs.next()) {
+			index = 0;
+			int num = rs.getInt(++index);
+			String writer = rs.getString(++index);
+			String title = rs.getString(++index);
+			String content = rs.getString(++index);
+			String regdate = rs.getString(++index);
+			obj1 = new JSONObject();
+			obj1.put("num",num);
+			obj1.put("writer",writer);
+			obj1.put("title",title);
+			obj1.put("regdate",regdate);
+			array.add(obj1);
+		}
+		obj.put("items",array);
+
+	} catch (SQLException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} finally {
+		try {
+			if (rs != null)
+				rs.close();
+			if (pstmt != null)
+				pstmt.close();
+			if (con != null)
+				con.close();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+	}
+	return obj.toJSONString()
+}
+}
 

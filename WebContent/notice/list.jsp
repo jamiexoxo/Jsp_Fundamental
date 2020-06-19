@@ -5,6 +5,8 @@
     pageEncoding="UTF-8"%>
 <%@ include file="../inc/header.jsp"%>
 <%
+	int displayCount = 3;//
+	int displayPageCount = 5;
 	String tempPage = request.getParameter("page");
 	int cPage = 0;
 	if(tempPage == null || tempPage.length()==0){
@@ -24,9 +26,10 @@
 	An = a1 + (n-1) * d
 	
 	*/
+	
 	NoticeDao dao = NoticeDao.getInstance();
-	int start   =  (cPage-1)*4;
-	ArrayList<NoticeDto> list = dao.select(start ,  4 );
+	int start   =  (cPage-1)*displayCount;
+	ArrayList<NoticeDto> list = dao.select(start ,  displayCount );
 	
 	
 %>
@@ -62,7 +65,7 @@
 				    <tr>
 				      <th scope="row"><%=dto.getNum() %></th>
 				      <td><%=dto.getWriter() %></td>
-				      <td><a href="view.jsp"><%=dto.getTitle() %></a></td>
+				      <td><a href="view.jsp?page=<%=cPage%>&num=<%=dto.getNum()%>"><%=dto.getTitle() %></a></td>
 				      <td><%=dto.getRegdate() %></td>
 				    </tr>
 				    <%}%>
@@ -70,85 +73,78 @@
 				  </tbody>
 				</table>
 				<%
-	                 			
-				     int totalRows = dao.getRows(); //128
-				     int totalPage = 0;
-				     int currentBlock = 0;
-				     int totalBlock = 0;// 총페이지와 총 블럭수도 알아야 함. 
-				     
-				     if(totalRows%10==0){
-				    	 totalPage= totalRows/10;
-				     }else{
-				    	 totalPage = totalRows/10 +1;
-				     }
-				     if(totalPage == 0){
-				    	 totalPage = 1;
-				     }
-				     
-				     
-				     if(cPage % 10 == 0) {
-				    	 //cpage = currentPage
-				    	 currentBlock = cPage/10;
-				     }else {
-				    	 currentBlock = cPage/10 +1;
-				     }
-				     
-				     if(totalPage%10==0){
-				    	 totalBlock = totalPage/10;
-				     }else{
-				    	 totalBlock = totalPage/10 +1;
-				     }
-				     //cpage가 들어올때 1부터 하니까
-				     int startPage = 1+(currentBlock -1) *10;
-				     int endPage = 10 +(currentBlock -1) *10;
-				     
-				     if(currentBlock == totalBlock){
-				    	 endPage = totalPage;
-				     }
-				
-				    /* 
-				     데이터의 값에 따라 보여지는 값이 다름. 
-				     128개/ 
-				    Previous 1 2 3 4 5 6 7 8 9 10 Next => currentBlock : 1block
-				    Previous 11 12 13 Next /previous버튼작동X, => currentBlock :  1block
-				     만약 현재 블럭과 토털블럭이 틀리면 토털 블럭에 totalpage를 넣으면 된다. 
-				    
-				    65 
-				    Previous 1 2 3 4 5 6 7 Next 현재 블럭도 과 토털블럭이 같다. 
-				    */
-				  
-				  
-				
+					/*
+					128개
+					Previous 1 2 3 4 5 6 7 8 9 10 Next  => currentBlock : 1block
+					Previous 11 12 13 Next              => currentBlock : 2block
+					
+					65개
+					Previous 1 2 3 4 5 6 7 Next
+					*/
+					int totalRows = dao.getRows();//11
+					int totalPage = 0;
+					int currentBlock = 0;
+					int totalBlock = 0;
+					
+					if(totalRows%displayCount==0){
+						totalPage = totalRows/displayCount;
+					}else{
+						totalPage =  totalRows/displayCount +1;
+					}
+					if(totalPage == 0){
+						totalPage = 1;
+					}
+					
+					if(cPage % displayPageCount == 0){
+						currentBlock = cPage/displayPageCount;
+					}else{
+						currentBlock = cPage/displayPageCount +1;
+					}
+					
+					if(totalPage%displayPageCount==0){
+						totalBlock = totalPage/displayPageCount;
+					}else{
+						totalBlock = totalPage/displayPageCount +1;
+					}
+					
+					int startPage = 1+(currentBlock -1) *displayPageCount;
+					int endPage = displayPageCount +(currentBlock -1) *displayPageCount;
+					
+					if(currentBlock == totalBlock){
+						endPage = totalPage;
+					}
+					
+					
+					
 				%>
-				
 				<nav aria-label="Page navigation example">
 				  <ul class="pagination justify-content-center">
-				     <%-- 현재블럭 --%>
-				     <%if(currentBlock==1){ %>
-				     <a class="page-link" href="#">Next</a>
+				  	<%if(currentBlock==1){ %>
+				    <li class="page-item disabled">
 				      <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-				    </li> <%-- page개수.총 3 page나옴. --%>
+				    </li>
 				    <%}else{ %>
-				     <li class="page-item disabled">
+				    <li class="page-item">
 				      <a class="page-link" href="list.jsp?page=<%=startPage-1 %>" tabindex="-1" aria-disabled="true">Previous</a>
+				    </li>
 				    <%} %>
 				    <%for(int i=startPage;i<=endPage;i++){ %>
-				      <%-- href="list.jsp?page="<%=i%>에서 page값을 i값으로 호출 --%>
-				    <li class="page-item"><a class="page-link" href="list.jsp?page="<%=i%>></a></li>
+				    <li class="page-item"><a class="page-link" href="list.jsp?page=<%=i%>"><%=i %></a></li>
 				    <%} %>
 				    <%if(totalBlock==currentBlock){ %>
-				    <li class="page-item">
+				    <li class="page-item disabled">
 				      <a class="page-link" href="#">Next</a>
 				    </li>
 				    <%}else{ %>
-				     <a class="page-link" href="#">Next</a>
-				     <a class="page-link" href="list.jsp?page=<%=endPage+1%>">Next</a>
+				    <li class="page-item">
+				      <a class="page-link" href="list.jsp?page=<%=endPage+1%>">Next</a>
+				    </li>
 				    <%} %>
 				  </ul>
 				</nav>
-				<%-- 마지막블럭 --%>
+				
 				<div class="text-right"  style="margin-bottom : 20px;">
-					<a href="write.jsp" class="btn btn-outline-danger">글쓰기</a>
+					<a href="write.jsp?page=<%=cPage %>" class="btn btn-outline-danger">글쓰기</a>
 				</div>
 	        	
 	        	</div>
